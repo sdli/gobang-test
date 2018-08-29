@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>五子棋测试</title>
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <!-- 棋盘dom -->
+    <article class="flex-div">
+        <section class="flex-1"></section>
+        <div id="chess" class="chess"></div>
+        <section class="flex-1"></section>
+    </article>
+
+    <!-- 棋盘控制器 -->
+    <div class="controller">
+            <button id="back" class="btn">回退</button>
+            <button id="next" class="btn">前进</button>
+    </div>
+</body>
+<script src="./gobang.js"></script>
+<script>
+    // 初始化棋盘方法
+    var Game = new ChessDom("chess");
+
+    // 设置控制器
+    var back = document.getElementById("back");
+    var next = document.getElementById("next");
+    back.addEventListener("click",(e)=>{
+        Game.pre();
+    });
+
+    next.addEventListener("click",(e)=>{
+        Game.next();
+    });
+
+    // 配置机器人对战
+    var robot = new SillyRobot();
+    Game.on("go",(...rest)=>{
+        let step = rest[0][1];
+        let idea = robot.idea(step);
+        if(typeof idea.winner !== "undefined"){
+            Game.win();
+            setTimeout(()=>{
+                alert(idea.winner + "获得了胜利！")
+            },30);
+        }else{
+            if(!step.robot){
+                Game.go(parseInt(idea.black.MaxBlackId),true);
+            }
+        }
+    });
+</script>
+</html>

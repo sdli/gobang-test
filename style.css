@@ -1,0 +1,222 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* 按钮设置 */
+.controller{
+    padding: 32px;
+    text-align: center;
+}
+.btn{
+    height: 44px;
+    min-width: 30vmin;
+    text-align: center;
+}
+
+/* 定义棋盘样式 */
+.flex-div{
+    display: flex;
+}
+.flex-1{
+    flex: 1;
+}
+.chess {
+    width: 90vmin;
+    height: 90vmin;
+    overflow: hidden;
+}
+.chess > div {
+    width: 6.66%;
+    height: 6.66%;
+    float: left;
+    cursor: pointer;
+}
+
+.chess > div[black]{
+    background: #000;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #4d4d4d;
+}
+.chess > div[black] > span{
+    border-color: #000 !important;
+}
+.chess > div[white]{
+    background: #f6f6f6;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #4d4d4d;
+}
+.chess > div[white] > span{
+    border-color: #f6f6f6 !important;
+}
+.chess > div:hover{
+    border: 1px dashed #000;
+    border-radius: 50%;
+}
+.chess > div > span {
+    display: block;
+    width: 50%;
+    float: left;
+    height: 50%;
+    border: 1px solid #4d4d4d;
+}
+
+/* 定义左上角样式 */
+.chess_top_left > span:first-child{
+    border: 0;
+}
+.chess_top_left > span:nth-child(2){
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+}
+.chess_top_left > span:nth-child(3){
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 0;
+}
+.chess_top_left > span:last-child{
+    border-right: 0;
+    border-bottom: 0;
+}
+
+/* 定义右上角样式 */
+.chess_top_right > span:first-child{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+.chess_top_right > span:nth-child(2){
+    border: 0;
+}
+.chess_top_right > span:nth-child(3){
+    border-left: 0;
+    border-bottom: 0;
+}
+.chess_top_right > span:last-child{
+    border-top: 0;
+    border-bottom: 0;
+    border-right: 0;
+}
+
+/* 定义顶部样式 */
+.chess_top > span:first-child , .chess_top > span:nth-child(2){
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
+.chess_top > span:nth-child(3){
+    border-left: 0;
+    border-bottom: 0;
+}
+.chess_top > span:last-child{
+    border-right: 0;
+    border-bottom: 0;
+}
+
+/* 定义左侧样式 */
+.chess_left > span:first-child,.chess_left > span:nth-child(3){
+    border-top: 0;
+    border-bottom: 0;
+    border-left: 0;
+}
+.chess_left > span:nth-child(2){
+    border-top: 0;
+    border-right: 0; 
+}
+.chess_left > span:last-child{
+    border-bottom: 0;
+    border-right: 0;
+}
+
+/* 定义右侧样式 */
+.chess_right > span:nth-child(2), .chess_right > span:last-child{
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 0;
+}
+.chess_right > span:first-child{
+    border-top: 0;
+    border-left: 0;
+}
+.chess_right > span:nth-child(3){
+    border-bottom: 0;
+    border-left: 0;
+}
+
+/* 定义中间样式 */
+.chess_center > span:first-child{
+    border-top: 0;
+    border-left: 0;
+}
+.chess_center > span:nth-child(2){
+    border-right: 0;
+    border-top: 0;
+}
+.chess_center > span:nth-child(3){
+    border-left: 0;
+    border-bottom: 0;
+}
+.chess_center > span:last-child{
+    border-bottom: 0;
+    border-right: 0;
+}
+
+/* 定义左下角样式 */
+.chess_bottom_left > span:nth-child(2){
+    border-right: 0;
+    border-top: 0;
+}
+.chess_bottom_left > span:last-child{
+    border-bottom: 0;
+    border-right: 0;
+    border-left: 0;
+}
+.chess_bottom_left > span:first-child{
+    border-top: 0;
+    border-left: 0;
+    border-bottom: 0;
+}
+.chess_bottom_left > span:nth-child(3){
+    border:0;
+}
+
+/* 定义底部样式 */
+.chess_bottom > span:first-child{
+    border-left: 0;
+    border-top: 0;
+}
+.chess_bottom > span:nth-child(2){
+    border-right: 0;
+    border-top: 0;
+}
+.chess_bottom > span:nth-child(3){
+    border-left: 0;
+    border-bottom: 0;
+    border-right: 0;
+}
+.chess_bottom > span:last-child{
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+}
+
+/* 定义右下角样式 */
+.chess_bottom_right > span:first-child{
+    border-top: 0;
+    border-left: 0;
+}
+.chess_bottom_right > span:nth-child(2){
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+}
+.chess_bottom_right > span:nth-child(3){
+    border-left: 0;
+    border-bottom: 0;
+    border-right: 0;
+}
+.chess_bottom_right > span:last-child{
+    border: 0;
+}
