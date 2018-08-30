@@ -17,39 +17,78 @@
 
     <!-- 棋盘控制器 -->
     <div class="controller">
-            <button id="back" class="btn">回退</button>
-            <button id="next" class="btn">前进</button>
+        <button id="back" class="btn">悔棋</button>
+        <button id="next" class="btn">撤销悔棋</button>
+        <button id="reco" class="btn">推荐下一步</button>
     </div>
 </body>
 <script src="./gobang.js"></script>
 <script>
-    // 初始化棋盘方法
+
+    // 初始化推荐数据
+    var __data = {
+        rec : 98 // 推荐的下一步棋走法，第一步为可以为随机
+    };
+
+
+    /*
+    chessDom继承于Gobang，
+    其中Gobang负责棋盘的状态管理和事件管理
+    而chessDom负责捕获Gobang的状态和事件，用于Dom操作
+    */
     var Game = new ChessDom("chess");
 
     // 设置控制器
     var back = document.getElementById("back");
     var next = document.getElementById("next");
+    var recomment = document.getElementById("reco");
+
+    // 绑定监听函数，分别为推荐步骤、下一步、悔棋
     back.addEventListener("click",(e)=>{
         Game.pre();
     });
-
     next.addEventListener("click",(e)=>{
         Game.next();
     });
+    recomment.addEventListener("click",(e)=>{
+        Game.go(parseInt(__data.rec));
+    });
 
-    // 配置机器人对战
+    
+
+    /*
+    SillyRobot使用加权分数的方法计算赢法数组
+    会同时计算出黑棋（我方）的最佳步骤
+     */ 
     var robot = new SillyRobot();
+
     Game.on("go",(...rest)=>{
         let step = rest[0][1];
         let idea = robot.idea(step);
+
+        // 检测是否获得胜利
         if(typeof idea.winner !== "undefined"){
             Game.win();
             setTimeout(()=>{
                 alert(idea.winner + "获得了胜利！")
             },30);
         }else{
-            if(!step.robot){
-                Game.go(parseInt(idea.black.MaxBlackId),true);
+            
+            //判断是否平局，如果没有推荐的棋子，则判为平局
+            if(idea.black.MaxBlackId === 0 || idea.white.MaxWhiteId === 0){
+                Game.win();
+                setTimeout(()=>{
+                    alert("平局");
+                },30);
+            }else{
+
+                // 设置黑棋推荐
+                __data.rec = idea.black.MaxBlackId;
+            
+                // 电脑进行下棋
+                if(!step.robot){
+                    Game.go(parseInt(idea.white.MaxWhiteId),true);
+                }
             }
         }
     });

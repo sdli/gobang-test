@@ -76,16 +76,15 @@ class Gobang extends Events{
     pre(){
 
         // 获取最后一步棋
-        console.log(this.currentStep)
         if(this.currentStep - 2 >= 0 && !this.wined) {
             let lastStep = this.steps[this.currentStep - 1 ], preStep = this.steps[this.currentStep - 2];
             console.log("回退了一步",lastStep);
 
             // 回退数据
-            lastStep.type === 0 ? this.checkedWhite.delete(lastStep.id) : this.checkedBlack.delete(lastStep.id);
+            lastStep.type === 0 ? this.checkedBlack.delete(lastStep.id) : this.checkedWhite.delete(lastStep.id);
             this.emit(this.eventGroup.pre,lastStep);
 
-            preStep.type === 0 ? this.checkedWhite.delete(preStep.id) : this.checkedBlack.delete(preStep.id);
+            preStep.type === 0 ? this.checkedBlack.delete(preStep.id) : this.checkedWhite.delete(preStep.id);
             this.emit(this.eventGroup.pre,preStep);
 
             this.currentStep = this.currentStep - 2 ;
@@ -96,7 +95,6 @@ class Gobang extends Events{
     
     // 下棋
     go(id,robot = false){
-        console.log(this.currentStep,robot,typeof id)
         if((!robot || ((this.currentStep)%2 === 1 && robot)) && !this.wined){
             if(typeof id === "number" || (id.prototype.isPrototypeOf([]) && id.length === 2)){
                 
@@ -113,9 +111,8 @@ class Gobang extends Events{
                     (this.currentStep)%2 === 0 ? this.checkedBlack.add(newId) : this.checkedWhite.add(newId);
                     this.steps.push(step);
                     
-                    console.log(this.events);
                     this.currentStep++;
-                    console.log("走了一步",step,this.checkedWhite,this.checkedBlack);
+                    console.log("走了一步",step);
                     this.emit(this.eventGroup.go,step,{
                         checkedBlack:this.checkedBlack,
                         checkedWhite:this.checkedWhite,
@@ -129,12 +126,19 @@ class Gobang extends Events{
 
     // 撤销返回
     next(){
-        if(this.currentStep < this.steps.length - 1){
-            let step = this.steps[this.currentStep + 1];
+        if(this.currentStep < this.steps.length){
+
+            let step = this.steps[this.currentStep] , stepNext = this.steps[this.currentStep + 1];
+
+            // 前进两步骤
             step.type === 1 ? this.checkedWhite.add(step.id) : this.checkedBlack.add(step.id);
             this.emit(this.eventGroup.next, step);
-            console.log("前进了一步", step);
-            this.currentStep++;
+
+            stepNext.type === 0 ? this.checkedBlack.add(stepNext.id) : this.checkedWhite.add(stepNext.id);
+            this.emit(this.eventGroup.next, stepNext);
+
+            console.log("撤销了一次");
+            this.currentStep = this.currentStep + 2;
         }
 
         return this;
@@ -283,7 +287,6 @@ class SillyRobot{
     // 初始化赢法数组
     dataInit(){
         this.getWinArr();
-        console.log(this.__winArr);
     }
 
     // 用于更新数据
@@ -291,11 +294,10 @@ class SillyRobot{
         this.checkedBlack = checkedBlack;
         this.checkedWhite = checkedWhite;
         
-        console.log(checkedBlack,checkedWhite);
         let tempArrBlack = this.arrayToId(checkedWhite), tempArrWhite = this.arrayToId(checkedBlack);
         if( tempArrBlack === 1 || tempArrWhite === 1){
             return {
-                winner: tempArrBlack === 1 ? "black" : "white"
+                winner: tempArrBlack !== 1 ? "您" : "电脑"
             }
         }else{
             this.blackHotMap = this.idToHotMap(tempArrBlack,checkedBlack);
@@ -383,51 +385,50 @@ class SillyRobot{
                     score = 0; 
             }
             val.forEach((value)=>{
-                let data = newMap.has(value) ? (parseInt(newMap.get(value)) + score) : score;
-                if(value == 20){
-                    console.log(data)
-                }
-                newMap.set(value, data);
+                let data = (newMap.has(value) && typeof newMap.get(value) !== "undefined") ? (parseInt(newMap.get(value)) + score) : score;
+                newMap.set(value, parseInt(data));
             });
             count = 0;
             score = 0;
         });
 
-        console.log(newMap);
         return newMap;
     }
 
     // 获取最佳方法
     getBestIdea(){
-        let MaxBlack = 0, MaxBlackId = 0,
+        var MaxBlack = 0, MaxBlackId = 0,
             MaxWhite = 0, MaxWhiteId = 0;
         
         this.blackHotMap.forEach((val,key)=>{
+            let temp = 0, tempVal = 0;
             if(this.whiteHotMap.has(key)){
-                let temp = this.whiteHotMap.get(key);
-                this.whiteHotMap.set(typeof temp !== "undefined" && typeof val !== "undefined" ?  temp + val : val);
+                temp = typeof this.whiteHotMap.get(key) === "undefined" ? 0 : this.whiteHotMap.get(key);
+                tempVal = typeof val === "undefined"? 0 : val;
+                this.whiteHotMap.set(key, tempVal + temp);
             }
-        })
+        });
 
         this.whiteHotMap.forEach((val,key)=>{
+            let temp = 0,tempVal = 0;
             if(this.blackHotMap.has(key)){
-                this.blackHotMap.set(val + this.blackHotMap.get(key));
+                temp = typeof this.blackHotMap.get(key) === "undefined" ? 0 : this.blackHotMap.get(key);
+                tempVal = typeof val === "undefined"? 0 : val;
+                this.blackHotMap.set(key, tempVal + temp);
             }
-        })
+        });
         
         this.blackHotMap.forEach((val,key)=>{
-            MaxBlack = MaxBlack > val ? MaxBlack : val;
-            MaxBlackId = MaxBlack > val ? MaxBlackId : key;
+            let t = (val > MaxBlack  && !this.checkedBlack.has(key) && !this.checkedWhite.has(key)) ? 1 : 0;
+            MaxBlack = t === 1 ? val : MaxBlack;
+            MaxBlackId = t === 1  ? key : MaxBlackId;
         });
         this.whiteHotMap.forEach((val,key)=>{
-            MaxWhite = MaxWhite > val ? MaxWhite : val;
-            MaxWhiteId = MaxWhite > val ? MaxWhiteId : key;            
+            let t = (val > MaxWhite  && !this.checkedBlack.has(key) && !this.checkedWhite.has(key)) ? 1 : 0;
+            MaxWhite = t === 1 ? val : MaxWhite;
+            MaxWhiteId = t === 1 ? key : MaxWhiteId; 
         });
 
-        console.log({
-            black: {MaxBlack,MaxBlackId},
-            white: {MaxWhite,MaxWhiteId}
-        })
         return {
             black: {MaxBlack,MaxBlackId},
             white: {MaxWhite,MaxWhiteId}
