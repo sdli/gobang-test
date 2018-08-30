@@ -20,6 +20,7 @@
         <button id="back" class="btn">悔棋</button>
         <button id="next" class="btn">撤销悔棋</button>
         <button id="reco" class="btn">推荐下一步</button>
+        <button id="clear" class="btn">重新开始</button>
     </div>
 </body>
 <script src="./gobang.js"></script>
@@ -42,6 +43,7 @@
     var back = document.getElementById("back");
     var next = document.getElementById("next");
     var recomment = document.getElementById("reco");
+    var clear = document.getElementById("clear");
 
     // 绑定监听函数，分别为推荐步骤、下一步、悔棋
     back.addEventListener("click",(e)=>{
@@ -53,9 +55,12 @@
     recomment.addEventListener("click",(e)=>{
         Game.go(parseInt(__data.rec));
     });
-
+    clear.addEventListener("click",(e)=>{
+        if(confirm("是否重新开始？")){
+            Game.clear();
+        }
+    });
     
-
     /*
     SillyRobot使用加权分数的方法计算赢法数组
     会同时计算出黑棋（我方）的最佳步骤

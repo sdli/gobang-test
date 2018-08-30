@@ -145,6 +145,25 @@ class Gobang extends Events {
     return this;
   }
 
+  clear(){
+    if (this.currentStep  > 0) {
+      
+      for(let i of this.steps){
+        i.type === 0 ? this.checkedBlack.delete(i.id) : this.checkedWhite.delete(i.id);
+        this.emit(this.eventGroup.pre, i);
+      }
+
+      console.log("棋盘被清空")
+
+      // 重置数据
+      this.currentStep = 0;
+      this.checkedBlack = new Set(); // 黑棋Set
+      this.checkedWhite = new Set(); // 白棋Set
+      this.steps = []; // 步骤记录
+      this.wined = false; // 是否锁定棋盘
+    }
+  }
+
   win() {
     this.wined = true;
   }
