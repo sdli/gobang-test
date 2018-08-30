@@ -1,0 +1,19 @@
+{
+  "name": "gobang-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gobang.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdli/gobang-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdli/gobang-test/issues"
+  },
+  "homepage": "https://github.com/sdli/gobang-test#readme"
+}
